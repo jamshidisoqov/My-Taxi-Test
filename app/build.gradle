@@ -1,0 +1,97 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id "androidx.navigation.safeargs.kotlin"
+    id "kotlin-parcelize"
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    namespace 'uz.gita.my_taxi_test'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "uz.gita.my_taxi_test"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "MAP_API_KEY", "\"pk.eyJ1IjoiaGFzYW5ib3k5ODI4IiwiYSI6ImNsZXpnenFzZTB4anUzcHA0eXkzZnA3aXAifQ.WTd1yh0Cd8jyy4lI6vrXmw\""
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures{
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    def room_version = "2.4.3"
+    def nav_version = "2.5.2"
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //live data
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
+
+    // Kotlin
+    //noinspection GradleDependency
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    //noinspection GradleDependency
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    //room
+    //noinspection GradleDependency
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    //noinspection GradleDependency
+    implementation "androidx.room:room-ktx:$room_version"
+
+    //hilt
+    implementation 'com.google.dagger:hilt-android:2.42'
+    kapt 'com.google.dagger:hilt-compiler:2.42'
+    implementation "androidx.hilt:hilt-navigation-fragment:1.0.0"
+
+
+    //coroutine
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+
+    //fragment ktx
+    implementation 'androidx.fragment:fragment-ktx:1.5.5'
+
+    // reflection-based flavor
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.5.6'
+
+    //Timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:5.5.0'
+
+    //permission checker
+    implementation 'com.karumi:dexter:6.2.3'
+}

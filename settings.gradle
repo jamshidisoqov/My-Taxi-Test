@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        mavenCentral{url("https://jitpack.io")}
+        maven {
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = "mapbox"
+                password = "pk.eyJ1IjoiaGFzYW5ib3k5ODI4IiwiYSI6ImNsZXpnenFzZTB4anUzcHA0eXkzZnA3aXAifQ.WTd1yh0Cd8jyy4lI6vrXmw"
+            }
+        }
+    }
+}
+rootProject.name = "My Taxi Test"
+include ':app'

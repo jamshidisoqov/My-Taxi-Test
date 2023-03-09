@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/main_map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f7f7f7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_menu"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="32dp"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_small"
+        android:src="@drawable/ic_menu"
+        app:contentPadding="@dimen/margin_std"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+
+    <LinearLayout
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/image_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_menu">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/container_free"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginVertical="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_weight="1"
+            android:elevation="@dimen/margin_small"
+            app:cardBackgroundColor="@color/secondary"
+            app:cardElevation="@dimen/margin_small"
+            app:layout_constraintStart_toEndOf=""
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialCardView.InnerLeft">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/free"
+                android:textColor="@color/white" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/container_busy"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginVertical="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_weight="1"
+            android:elevation="@dimen/margin_small"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="@dimen/margin_small"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialCardView.InnerRight">
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/busy"
+                android:textColor="@color/black" />
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/container_notification"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="@dimen/margin_large"
+        app:layout_constraintBottom_toBottomOf="@id/image_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_menu">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:elevation="@dimen/margin_small"
+            android:src="@drawable/ic_notification"
+            app:contentPadding="@dimen/margin_std"
+            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+    </FrameLayout>
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapeableImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/margin_large"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_small"
+        android:src="@drawable/ic_flash"
+        app:contentPadding="@dimen/margin_std"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/margin_large"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_small"
+        android:src="@drawable/ic_flash"
+        app:contentPadding="@dimen/margin_std"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_zoom_in"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_small"
+        android:src="@drawable/ic_add"
+        app:contentPadding="@dimen/margin_std"
+        app:layout_constraintBottom_toTopOf="@id/image_zoom_out"
+        app:layout_constraintEnd_toEndOf="@id/image_zoom_out"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_zoom_out"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="@dimen/margin_extra_large"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_small"
+        android:src="@drawable/ic_minus"
+        app:contentPadding="@dimen/margin_std"
+        app:layout_constraintBottom_toTopOf="@id/image_my_location"
+        app:layout_constraintEnd_toEndOf="@id/image_my_location"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_my_location"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="@dimen/margin_large"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_small"
+        android:src="@drawable/ic_navigation"
+        app:contentPadding="@dimen/margin_std"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    <FrameLayout
+        android:id="@+id/container_exchange"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="@dimen/margin_extra_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/container_rocket"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_main"
+            android:src="@drawable/ic_exchange"
+            app:contentPadding="@dimen/margin_std"
+            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/container_rocket"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="@dimen/margin_extra_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/container_tariff"
+        app:layout_constraintStart_toEndOf="@id/container_exchange">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_main"
+            android:src="@drawable/ic_rocket"
+            app:contentPadding="@dimen/margin_std"
+            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/container_tariff"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="@dimen/margin_extra_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/container_rocket">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_main"
+            android:src="@drawable/ic_tariff"
+            app:contentPadding="@dimen/margin_std"
+            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
