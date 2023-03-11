@@ -30,8 +30,7 @@
         </activity>
 
         <service
-            android:name=".service.LocationListenerService"
-            android:foregroundServiceType="location" />
+            android:name=".service.LocationListenerService" />
     </application>
 
 </manifest>

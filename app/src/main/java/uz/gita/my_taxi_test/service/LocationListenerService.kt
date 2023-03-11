@@ -35,8 +35,8 @@ class LocationListenerService : Service(), LocationListener {
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
         locationManager?.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            5000L,
-            10f,
+            3000L,
+            20f,
             this
         )
         return START_STICKY

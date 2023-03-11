@@ -49,7 +49,6 @@
             android:elevation="@dimen/margin_small"
             app:cardBackgroundColor="@color/secondary"
             app:cardElevation="@dimen/margin_small"
-            app:layout_constraintStart_toEndOf=""
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialCardView.InnerLeft">
 
             <com.google.android.material.textview.MaterialTextView

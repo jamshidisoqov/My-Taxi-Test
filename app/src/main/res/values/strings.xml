@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">My Taxi Test</string>
-    <string name="map_token"></string>
     <string name="ride_history">Ride history</string>
     <string name="payment">Payment</string>
     <string name="settings">Settings</string>
@@ -9,4 +8,5 @@
     <string name="my_account">My account</string>
     <string name="free">Свободен</string>
     <string name="busy">Занят</string>
+    <string name="mapbox_access_token">sk.eyJ1IjoibnVybGliYXkiLCJhIjoiY2xlenRucHJlMDJsNTN4cHBzeDR4dzl5cCJ9.u10bkqv7rs5NlyfgE8N-jg</string>
 </resources>
