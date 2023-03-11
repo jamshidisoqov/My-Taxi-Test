@@ -23,7 +23,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "MAP_API_KEY", "\"pk.eyJ1IjoiaGFzYW5ib3k5ODI4IiwiYSI6ImNsZXpnenFzZTB4anUzcHA0eXkzZnA3aXAifQ.WTd1yh0Cd8jyy4lI6vrXmw\""
+            buildConfigField "String", "MAP_API_KEY", "\"pk.eyJ1IjoiaGFzYW5ib3k5ODI4IiwiYSI6ImNsZjNpd20zbTAxdnczdHIwZGhwZHVsdWMifQ.8Tg9vKYB1vppI4mJMLnIeQ\""
         }
         release {
             minifyEnabled false
@@ -92,9 +92,7 @@ dependencies {
 
     implementation 'com.mapbox.maps:android:10.11.1'
 
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:5.5.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.2.1'
 
     //permission checker
     implementation 'com.karumi:dexter:6.2.3'

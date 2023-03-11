@@ -10,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenCentral{url("https://jitpack.io")}
         maven {
             url 'https://api.mapbox.com/downloads/v2/releases/maven'
             authentication {
