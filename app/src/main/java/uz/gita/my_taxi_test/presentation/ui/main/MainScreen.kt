@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.animation.TypeEvaluator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ import uz.gita.my_taxi_test.presentation.presenter.MainViewModel
 import uz.gita.my_taxi_test.presentation.presenter.impl.MainViewModelImpl
 import uz.gita.my_taxi_test.service.LocationListenerService
 import uz.gita.my_taxi_test.utils.extensions.bitmapFromDrawableRes
+import uz.gita.my_taxi_test.utils.extensions.checkLocation
 import uz.gita.my_taxi_test.utils.extensions.hasPermission
 import uz.gita.my_taxi_test.utils.extensions.include
 
@@ -71,7 +73,19 @@ class MainScreen : Fragment(R.layout.screen_main) {
                 .fromBitmap(bitmapFromDrawableRes(R.drawable.ic_yellow_car)!!)
         }
         mainContent.mainMapView.getMapAsync {
-            it.setStyle(Style.MAPBOX_STREETS)
+            it.uiSettings.apply {
+                isCompassEnabled = false
+                isLogoEnabled = false
+                isAttributionEnabled = false
+            }
+            when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    it.setStyle(Style.LIGHT)
+                }
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    it.setStyle(Style.DARK)
+                }
+            }
             it.cameraPosition = CameraPosition.Builder()
                 .target(TASHKENT)
                 .zoom(15.0)
@@ -94,7 +108,7 @@ class MainScreen : Fragment(R.layout.screen_main) {
                 val animator = ObjectAnimator.ofObject(
                     latLngEvaluator, this@MainScreen.marker.position,
                     LatLng(location.lat, location.lng)
-                ).setDuration(1500L)
+                ).setDuration(3000L)
                 animator.addUpdateListener {
                     this@MainScreen.marker.position = it.animatedValue as LatLng
                 }
@@ -117,12 +131,20 @@ class MainScreen : Fragment(R.layout.screen_main) {
         }
     }
 
+    @SuppressLint("NewApi")
     private fun startLocation() {
         hasPermission(
             Manifest.permission.ACCESS_FINE_LOCATION,
             onPermissionGranted = {
-                val intent = Intent(requireContext(), LocationListenerService::class.java)
-                requireContext().startService(intent)
+                hasPermission(Manifest.permission.FOREGROUND_SERVICE, onPermissionGranted = {
+                    requireContext().checkLocation {
+                        if (it) {
+                            val intent =
+                                Intent(requireContext(), LocationListenerService::class.java)
+                            requireContext().startForegroundService(intent)
+                        }
+                    }
+                }, onPermissionDenied = {})
             },
             onPermissionDenied = {
                 Snackbar.make(
