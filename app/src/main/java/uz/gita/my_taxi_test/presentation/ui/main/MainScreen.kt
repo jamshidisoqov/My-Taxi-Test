@@ -2,27 +2,37 @@ package uz.gita.my_taxi_test.presentation.ui.main
 
 import android.Manifest
 import android.animation.ObjectAnimator
-import android.animation.TypeEvaluator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.annotations.IconFactory
-import com.mapbox.mapboxsdk.annotations.Marker
-import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.LocationComponentOptions
+import com.mapbox.mapboxsdk.location.modes.CameraMode
+import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
+import com.mapbox.mapboxsdk.utils.BitmapUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -31,15 +41,15 @@ import uz.gita.my_taxi_test.databinding.ScreenMainBinding
 import uz.gita.my_taxi_test.presentation.presenter.MainViewModel
 import uz.gita.my_taxi_test.presentation.presenter.impl.MainViewModelImpl
 import uz.gita.my_taxi_test.service.LocationListenerService
-import uz.gita.my_taxi_test.utils.extensions.bitmapFromDrawableRes
 import uz.gita.my_taxi_test.utils.extensions.checkLocation
 import uz.gita.my_taxi_test.utils.extensions.hasPermission
 import uz.gita.my_taxi_test.utils.extensions.include
+import uz.gita.my_taxi_test.utils.latLngEvaluator
 
 
 // Created by Jamshid Isoqov on 3/8/2023
 @AndroidEntryPoint
-class MainScreen : Fragment(R.layout.screen_main) {
+class MainScreen : Fragment(R.layout.screen_main), OnMapReadyCallback {
 
     private lateinit var viewBinding: ScreenMainBinding
 
@@ -47,13 +57,14 @@ class MainScreen : Fragment(R.layout.screen_main) {
 
     private var mapBox: MapboxMap? = null
 
-    private lateinit var marker: Marker
+    private lateinit var symbolManager: SymbolManager
+
+    private lateinit var markerIcon: Symbol
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+
         Mapbox.getInstance(requireContext(), getString(R.string.mapbox_access_token))
 
         viewBinding =
@@ -66,97 +77,58 @@ class MainScreen : Fragment(R.layout.screen_main) {
 
     @SuppressLint("Recycle")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = viewBinding.include {
+        setUpObservers()
+        startLocation()
+        mainContent.mainMapView.getMapAsync(this@MainScreen)
+    }
 
-        val markerOption = MarkerOptions().apply {
-            position = TASHKENT
-            icon = IconFactory.getInstance(requireContext())
-                .fromBitmap(bitmapFromDrawableRes(R.drawable.ic_yellow_car)!!)
-        }
-        mainContent.mainMapView.getMapAsync {
-            it.uiSettings.apply {
-                isCompassEnabled = false
-                isLogoEnabled = false
-                isAttributionEnabled = false
-            }
-            when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_NO -> {
-                    it.setStyle(Style.LIGHT)
-                }
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    it.setStyle(Style.DARK)
-                }
-            }
-            it.cameraPosition = CameraPosition.Builder()
-                .target(TASHKENT)
-                .zoom(15.0)
-                .build()
-            mapBox = it
-
-            this@MainScreen.marker = mapBox?.addMarker(markerOption)!!
-        }
-
+    private fun setUpObservers() {
         viewModel.lastLocationFlow.onEach { location ->
             mapBox?.let { mapboxMap ->
-                mapboxMap.animateCamera(
-                    CameraUpdateFactory.newCameraPosition(
-                        CameraPosition.Builder()
-                            .target(LatLng(location.lat, location.lng))
-                            .bearing(location.bearing)
-                            .build()
-                    )
+                val camera = CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.Builder()
+                        .target(LatLng(location.lat, location.lng))
+                        .bearing(location.bearing)
+                        .build()
                 )
-                val animator = ObjectAnimator.ofObject(
-                    latLngEvaluator, this@MainScreen.marker.position,
+                mapboxMap.animateCamera(camera)
+
+                val anim = ObjectAnimator.ofObject(
+                    latLngEvaluator,
+                    markerIcon.latLng,
                     LatLng(location.lat, location.lng)
                 ).setDuration(3000L)
-                animator.addUpdateListener {
-                    this@MainScreen.marker.position = it.animatedValue as LatLng
+                anim.addUpdateListener {
+                    markerIcon.latLng = it.animatedValue as LatLng
+                    symbolManager.update(markerIcon)
                 }
-                animator.start()
+                anim.start()
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
-
-        startLocation()
-
     }
 
-    private val latLngEvaluator: TypeEvaluator<LatLng> = object : TypeEvaluator<LatLng> {
-        private val latLng = LatLng()
-        override fun evaluate(fraction: Float, startValue: LatLng, endValue: LatLng): LatLng {
-            latLng.latitude =
-                startValue.latitude + (endValue.latitude - startValue.latitude) * fraction
-            latLng.longitude =
-                startValue.longitude + (endValue.longitude - startValue.longitude) * fraction
-            return latLng
-        }
-    }
 
     @SuppressLint("NewApi")
     private fun startLocation() {
-        hasPermission(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            onPermissionGranted = {
-                hasPermission(Manifest.permission.FOREGROUND_SERVICE, onPermissionGranted = {
-                    requireContext().checkLocation {
-                        if (it) {
-                            val intent =
-                                Intent(requireContext(), LocationListenerService::class.java)
-                            requireContext().startForegroundService(intent)
-                        }
+        hasPermission(Manifest.permission.ACCESS_FINE_LOCATION, onPermissionGranted = {
+            hasPermission(Manifest.permission.FOREGROUND_SERVICE, onPermissionGranted = {
+                requireContext().checkLocation {
+                    if (it) {
+                        val intent = Intent(requireContext(), LocationListenerService::class.java)
+                        requireContext().startForegroundService(intent)
                     }
-                }, onPermissionDenied = {})
-            },
-            onPermissionDenied = {
-                Snackbar.make(
-                    viewBinding.mainContent.containerFree,
-                    "Location not allowed. Please check again",
-                    Snackbar.LENGTH_SHORT
-                )
-                    .setAction("Try check") {
-                        startLocation()
-                    }
-                    .show()
-            })
+                }
+            }) {}
+
+        }, onPermissionDenied = {
+            Snackbar.make(
+                viewBinding.mainContent.containerFree,
+                "Location not allowed. Please check again",
+                Snackbar.LENGTH_SHORT
+            ).setAction("Try check") {
+                startLocation()
+            }.show()
+        })
     }
 
     override fun onStop() {
@@ -184,7 +156,51 @@ class MainScreen : Fragment(R.layout.screen_main) {
         viewBinding.mainContent.mainMapView.onDestroy()
     }
 
+    override fun onMapReady(mapbox: MapboxMap) = viewBinding.include {
+        mapbox.uiSettings.apply {
+            isCompassEnabled = false
+            isLogoEnabled = false
+            isAttributionEnabled = false
+        }
+
+        val style =
+            when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    Style.LIGHT
+                }
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    Style.DARK
+                }
+                else -> Style.LIGHT
+            }
+
+        mapbox.setStyle(style) { mapStyle ->
+            val selectedMarkerIconDrawable =
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_yellow_car, null)
+            mapBox = mapbox
+            mapbox.style?.addImage(
+                CAR_MARKER,
+                BitmapUtils.getBitmapFromDrawable(selectedMarkerIconDrawable)!!
+            )
+            symbolManager = SymbolManager(mainContent.mainMapView, mapbox, mapStyle)
+            symbolManager.iconAllowOverlap = true
+            symbolManager.iconIgnorePlacement = true
+            markerIcon = symbolManager.create(
+                SymbolOptions()
+                    .withLatLng(TASHKENT)
+                    .withIconImage(CAR_MARKER)
+                    .withDraggable(false)
+            )
+
+            mapbox.cameraPosition = CameraPosition.Builder()
+                .target(TASHKENT)
+                .zoom(15.0)
+                .build()
+        }
+    }
+
     companion object {
+        const val CAR_MARKER = "car_marker"
         val TASHKENT = LatLng(41.2995, 69.2401)
     }
 }

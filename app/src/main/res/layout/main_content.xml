@@ -22,6 +22,8 @@
         android:layout_marginStart="@dimen/margin_large"
         android:layout_marginTop="32dp"
         android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
         android:elevation="@dimen/margin_small"
         android:src="@drawable/ic_menu"
         app:contentPadding="@dimen/margin_std"

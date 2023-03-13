@@ -1,5 +1,6 @@
 package uz.gita.my_taxi_test.utils.extensions
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -71,6 +72,34 @@ fun Fragment.hasPermission(
         }).check()
 }
 
+fun Fragment.isLocationEnabled(): Boolean {
+    val manager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+    return manager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
+}
+
+fun Context.checkLocation(onCancelListener: (Boolean) -> Unit) {
+    val manager =
+        getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+    if (manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        onCancelListener.invoke(true)
+    } else {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                onCancelListener.invoke(false)
+                dialog.cancel()
+            }
+        val alert: AlertDialog = builder.create()
+        alert.show()
+    }
+}
+
+
+
 fun Fragment.hasPermission(
     permissions: List<String>,
     onPermissionGranted: () -> Unit,
@@ -94,25 +123,4 @@ fun Fragment.hasPermission(
             }
 
         })
-}
-
-fun Context.checkLocation(onCancelListener: (Boolean) -> Unit) {
-    val manager =
-        getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-    if (manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-        onCancelListener.invoke(true)
-    } else {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-            .setCancelable(false)
-            .setPositiveButton("Yes") { _, _ ->
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                onCancelListener.invoke(false)
-                dialog.cancel()
-            }
-        val alert: AlertDialog = builder.create()
-        alert.show()
-    }
 }

@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
+import com.mapbox.android.core.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,14 +22,14 @@ import javax.inject.Inject
 
 // Created by Jamshid Isoqov on 3/9/2023
 @AndroidEntryPoint
-class LocationListenerService : Service(), LocationListener {
+class LocationListenerService : Service() {
 
     @Inject
     lateinit var dao: LocationDao
 
-    private val scope = CoroutineScope(Dispatchers.IO + Job())
+    private lateinit var locationEngine: LocationEngine
 
-    private var locationManager: LocationManager? = null
+    private val scope = CoroutineScope(Dispatchers.IO + Job())
 
     companion object {
         private const val CHANNEL_ID = "location_channel"
@@ -44,20 +42,41 @@ class LocationListenerService : Service(), LocationListener {
     override fun onCreate() {
         super.onCreate()
         createChannel()
+        locationEngine = LocationEngineProvider.getBestLocationEngine(this)
     }
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        createNotification()
-        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000L, 20f, this)
-        return START_STICKY
-    }
+        val request = LocationEngineRequest
+            .Builder(3000L)
+            .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+            .setMaxWaitTime(1000L)
+            .build()
 
-    override fun onLocationChanged(p0: Location) {
-        scope.launch {
-            dao.insertLocation(LocationEntity(0, p0.latitude, p0.longitude, p0.bearing.toDouble()))
-        }
+        locationEngine.requestLocationUpdates(
+            request,
+            object : LocationEngineCallback<LocationEngineResult> {
+                override fun onSuccess(result: LocationEngineResult?) {
+                    result?.lastLocation?.let { location ->
+                        scope.launch {
+                            dao.insertLocation(
+                                LocationEntity(
+                                    0,
+                                    location.latitude,
+                                    location.longitude,
+                                    location.bearing.toDouble()
+                                )
+                            )
+                        }
+                    }
+                }
+
+                override fun onFailure(p0: Exception) {}
+            },
+            Looper.getMainLooper()
+        )
+        createNotification()
+        return START_STICKY
     }
 
     private fun createNotification() {

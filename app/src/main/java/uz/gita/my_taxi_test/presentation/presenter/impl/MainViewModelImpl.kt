@@ -22,6 +22,7 @@ class MainViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             getLastLocationUseCase.getLastLocation().onEach {
+                println("TTTTT")
                 lastLocationFlow.emit(it)
             }.launchIn(viewModelScope)
         }
