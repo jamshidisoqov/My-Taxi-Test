@@ -189,6 +189,8 @@ class MainScreen : Fragment(R.layout.screen_main), OnMapReadyCallback {
                 .zoom(15.0)
                 .build()
         }
+
+        viewModel.getLastLocation()
     }
 
     companion object {

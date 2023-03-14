@@ -18,14 +18,11 @@ class MainViewModelImpl @Inject constructor(
 ) : MainViewModel, ViewModel() {
 
     override val lastLocationFlow = MutableSharedFlow<LocationEntity>()
-
-    init {
+    override fun getLastLocation() {
         viewModelScope.launch {
             getLastLocationUseCase.getLastLocation().onEach {
-                println("TTTTT")
                 lastLocationFlow.emit(it)
             }.launchIn(viewModelScope)
         }
     }
-
 }

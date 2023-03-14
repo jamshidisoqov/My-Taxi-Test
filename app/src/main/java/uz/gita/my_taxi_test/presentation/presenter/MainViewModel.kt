@@ -8,4 +8,6 @@ interface MainViewModel {
 
     val lastLocationFlow: SharedFlow<LocationEntity>
 
+    fun getLastLocation()
+
 }
