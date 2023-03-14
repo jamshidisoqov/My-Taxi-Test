@@ -21,10 +21,10 @@
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/margin_large"
         android:layout_marginTop="32dp"
-        android:background="@color/white"
+        android:background="@drawable/bg_content_image"
         android:clickable="true"
-        android:focusable="true"
         android:elevation="@dimen/margin_small"
+        android:focusable="true"
         android:src="@drawable/ic_menu"
         app:contentPadding="@dimen/margin_std"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,15 +96,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/image_menu">
 
+
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:background="@color/white"
+            android:background="@drawable/bg_content_image"
+            android:clickable="true"
             android:elevation="@dimen/margin_small"
+            android:focusable="true"
             android:src="@drawable/ic_notification"
             app:contentPadding="@dimen/margin_std"
             app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+        <FrameLayout
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="end"
+            android:background="@drawable/bg_badge"
+            android:elevation="@dimen/margin_small">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/one"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </FrameLayout>
+
     </FrameLayout>
 
 
@@ -113,8 +133,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/margin_large"
-        android:background="@color/white"
+        android:background="@drawable/bg_content_image"
+        android:clickable="true"
         android:elevation="@dimen/margin_small"
+        android:focusable="true"
         android:src="@drawable/ic_flash"
         app:contentPadding="@dimen/margin_std"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -127,8 +149,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/margin_large"
-        android:background="@color/white"
+        android:background="@drawable/bg_content_image"
+        android:clickable="true"
         android:elevation="@dimen/margin_small"
+        android:focusable="true"
         android:src="@drawable/ic_flash"
         app:contentPadding="@dimen/margin_std"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -141,8 +165,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="@dimen/margin_large"
-        android:background="@color/white"
+        android:background="@drawable/bg_content_image"
+        android:clickable="true"
         android:elevation="@dimen/margin_small"
+        android:focusable="true"
         android:src="@drawable/ic_add"
         app:contentPadding="@dimen/margin_std"
         app:layout_constraintBottom_toTopOf="@id/image_zoom_out"
@@ -154,8 +180,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="@dimen/margin_extra_large"
-        android:background="@color/white"
+        android:background="@drawable/bg_content_image"
+        android:clickable="true"
         android:elevation="@dimen/margin_small"
+        android:focusable="true"
         android:src="@drawable/ic_minus"
         app:contentPadding="@dimen/margin_std"
         app:layout_constraintBottom_toTopOf="@id/image_my_location"
@@ -167,8 +195,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="@dimen/margin_large"
-        android:background="@color/white"
+        android:background="@drawable/bg_content_image"
+        android:clickable="true"
         android:elevation="@dimen/margin_small"
+        android:focusable="true"
         android:src="@drawable/ic_navigation"
         app:contentPadding="@dimen/margin_std"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -186,15 +216,34 @@
         app:layout_constraintEnd_toStartOf="@id/container_rocket"
         app:layout_constraintStart_toStartOf="parent">
 
+
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_main"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_exchange"
             app:contentPadding="@dimen/margin_std"
-            app:tint="@color/icon_tint_color"
-            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+            app:shapeAppearanceOverlay="@style/CircleImageStyle"
+            app:tint="@color/icon_tint_color" />
+
+        <FrameLayout
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end"
+            android:background="@drawable/bg_badge"
+            android:elevation="@dimen/margin_small">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/one"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </FrameLayout>
 
     </FrameLayout>
 
@@ -212,10 +261,12 @@
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_main"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_rocket"
             app:contentPadding="@dimen/margin_std"
-            app:tint="@color/icon_tint_color"
-            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+            app:shapeAppearanceOverlay="@style/CircleImageStyle"
+            app:tint="@color/icon_tint_color" />
 
     </FrameLayout>
 
@@ -233,10 +284,12 @@
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_main"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_tariff"
             app:contentPadding="@dimen/margin_std"
-            app:tint="@color/icon_tint_color"
-            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+            app:shapeAppearanceOverlay="@style/CircleImageStyle"
+            app:tint="@color/icon_tint_color" />
 
     </FrameLayout>
 

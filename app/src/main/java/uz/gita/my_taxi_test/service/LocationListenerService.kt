@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
-import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.mapbox.android.core.location.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +25,7 @@ import javax.inject.Inject
 
 // Created by Jamshid Isoqov on 3/9/2023
 @AndroidEntryPoint
-class LocationListenerService : Service() {
+class LocationListenerService : Service(), LocationListener {
 
     @Inject
     lateinit var dao: LocationDao
@@ -30,6 +33,8 @@ class LocationListenerService : Service() {
     private lateinit var locationEngine: LocationEngine
 
     private val scope = CoroutineScope(Dispatchers.IO + Job())
+
+    private var locationManager: LocationManager? = null
 
     companion object {
         private const val CHANNEL_ID = "location_channel"
@@ -47,33 +52,13 @@ class LocationListenerService : Service() {
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val request = LocationEngineRequest
-            .Builder(3000L)
-            .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
-            .setMaxWaitTime(1000L)
-            .build()
 
-        locationEngine.requestLocationUpdates(
-            request,
-            object : LocationEngineCallback<LocationEngineResult> {
-                override fun onSuccess(result: LocationEngineResult?) {
-                    result?.lastLocation?.let { location ->
-                        scope.launch {
-                            dao.insertLocation(
-                                LocationEntity(
-                                    0,
-                                    location.latitude,
-                                    location.longitude,
-                                    location.bearing.toDouble()
-                                )
-                            )
-                        }
-                    }
-                }
-
-                override fun onFailure(p0: Exception) {}
-            },
-            Looper.getMainLooper()
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        locationManager?.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            2000L,
+            0f,
+            this
         )
         createNotification()
         return START_STICKY
@@ -98,6 +83,12 @@ class LocationListenerService : Service() {
             val notificationManager: NotificationManager =
                 getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+    override fun onLocationChanged(p0: Location) {
+        scope.launch {
+            dao.insertLocation(LocationEntity(0, p0.latitude, p0.longitude, p0.bearing.toDouble()))
         }
     }
 }
