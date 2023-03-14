@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -71,7 +72,30 @@ class MainScreen : Fragment(R.layout.screen_main), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = viewBinding.include {
         setUpObservers()
         startLocation()
-        mainContent.mainMapView.getMapAsync(this@MainScreen)
+        mainContent.apply {
+            mainMapView.getMapAsync(this@MainScreen)
+            imageZoomIn.setOnClickListener {
+                mapBox?.let {
+                    it.cameraPosition = CameraPosition.Builder()
+                        .zoom(it.cameraPosition.zoom + 2)
+                        .build()
+
+                }
+            }
+
+            imageZoomOut.setOnClickListener {
+                mapBox?.let {
+                    it.cameraPosition = CameraPosition.Builder()
+                        .zoom(it.cameraPosition.zoom - 2)
+                        .build()
+
+                }
+            }
+
+            imageMenu.setOnClickListener {
+                drawerContainer.openDrawer(GravityCompat.START)
+            }
+        }
     }
 
     private fun setUpObservers() {
